@@ -7,13 +7,6 @@ import type { IDesktopApiPlatformInfo } from '@onekeyhq/shared/types/desktopApiP
 
 import { ipcMessageKeys } from '../config';
 
-const isFlatpakRuntime = () =>
-  Boolean(
-    process.env.FLATPAK ||
-    process.env.FLATPAK_ID ||
-    process.env.container === 'flatpak',
-  );
-
 // Exported for the contract test in desktopApiContract.test.ts so drift
 // between this builder and IDesktopApiPlatformInfo is caught at test time
 // in addition to compile time.
@@ -29,7 +22,7 @@ export const buildPlatformInfoForIpc = (): IDesktopApiPlatformInfo => {
       channel = 'appImage';
     } else if (process.env.SNAP) {
       channel = 'snap';
-    } else if (isFlatpakRuntime()) {
+    } else if (process.env.FLATPAK) {
       channel = 'flatpak';
     }
   }
