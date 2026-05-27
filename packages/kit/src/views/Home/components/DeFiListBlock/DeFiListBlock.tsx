@@ -114,6 +114,7 @@ const ProtocolListItem = memo(
     protocolKey,
     registerProtocol,
     tableLayout,
+    onActionSuccess,
   }: {
     isAllNetworks?: boolean;
     isLast: boolean;
@@ -121,6 +122,7 @@ const ProtocolListItem = memo(
     protocolKey: string;
     registerProtocol?: (key: string, handle: IProtocolHandle | null) => void;
     tableLayout?: boolean;
+    onActionSuccess?: () => void | Promise<void>;
   }) => {
     const handleProtocolRef = useCallback(
       (handle: IProtocolHandle | null) => {
@@ -136,6 +138,7 @@ const ProtocolListItem = memo(
           protocol={protocol}
           tableLayout={tableLayout}
           isAllNetworks={isAllNetworks}
+          onActionSuccess={onActionSuccess}
         />
         {!tableLayout && !isLast ? <MobileProtocolDivider /> : null}
       </YStack>
@@ -166,6 +169,7 @@ function DeFiListBlock({
     updateDeFiListProtocols,
     updateDeFiListProtocolMap,
     updateDeFiListState,
+    updateDeFiListSupportedActions,
   } = useDeFiListActions().current;
 
   const { updateAccountDeFiOverview, updateOverviewDeFiDataState } =
@@ -230,6 +234,28 @@ function DeFiListBlock({
   const isDeFiEnabled = isDeFiEnabledProp ?? computedIsDeFiEnabled;
   const [isAllNetRequestsEnabled, setIsAllNetRequestsEnabled] =
     useState<boolean>(false);
+
+  usePromiseResult(
+    async () => {
+      if (refreshCacheOnly || !isDeFiEnabled) {
+        updateDeFiListSupportedActions({ supportedActions: [] });
+        return;
+      }
+
+      try {
+        const supportedActions =
+          await backgroundApiProxy.serviceDeFi.fetchSupportedDeFiProtocols();
+        updateDeFiListSupportedActions({ supportedActions });
+      } catch (error) {
+        console.error(error);
+        updateDeFiListSupportedActions({ supportedActions: [] });
+      }
+    },
+    [refreshCacheOnly, isDeFiEnabled, updateDeFiListSupportedActions],
+    {
+      overrideIsFocused: (isPageFocused) => isPageFocused && isFocused,
+    },
+  );
 
   useEffect(() => {
     const isAllNetworks = networkUtils.isAllNetwork({
@@ -759,6 +785,15 @@ function DeFiListBlock({
       skipAccountsCache: true,
     });
   }, [runAllNetworkRequests]);
+
+  const handleActionSuccess = useCallback(() => {
+    isForceRefreshRef.current = true;
+    if (network?.isAllNetworks) {
+      handleRefreshAllNetworkData();
+      return;
+    }
+    void run();
+  }, [handleRefreshAllNetworkData, network?.isAllNetworks, run]);
 
   useEffect(() => {
     if (network?.isAllNetworks && isEmptyAccount) {
@@ -1291,6 +1326,7 @@ function DeFiListBlock({
                 protocolKey={protocolKey}
                 registerProtocol={registerProtocol}
                 tableLayout={tableLayout}
+                onActionSuccess={handleActionSuccess}
               />
             );
           })}
@@ -1334,6 +1370,7 @@ function DeFiListBlock({
     isSliced,
     isProtocolListInteractionLocked,
     handleToggleSliced,
+    handleActionSuccess,
     registerProtocol,
   ]);
 
