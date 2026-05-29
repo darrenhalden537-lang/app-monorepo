@@ -1,6 +1,6 @@
 ---
 name: 1k-defi-module-integration
-description: Guide for integrating new DeFi modules or protocols (staking, lending, Earn, Borrow) into OneKey.
+description: Guide for integrating new DeFi modules, portfolio actions, or protocols (staking, lending, Earn, Borrow) into OneKey.
 ---
 
 # DeFi Module Integration Guide
@@ -20,6 +20,11 @@ Before starting, determine your integration scenario:
 For Earn protocol reviews or regression follow-ups, also read
 [earn-regression-playbook.md](reference/earn-regression-playbook.md) before
 judging merge readiness.
+
+For DeFi portfolio one-click actions such as withdraw, claim, claimWithdrawal,
+or removeLiquidity, read
+[portfolio-actions-guide.md](reference/portfolio-actions-guide.md) before
+changing action visibility, build-transaction payloads, or post-action refresh.
 
 ---
 
@@ -110,6 +115,7 @@ Ask for clarification when:
 | **Repay with collateral** | Wallet balance only / With collateral option | Based on protocol |
 | **Dual amount input** | Single input / Bidirectional sync | Based on operation |
 | **Slippage settings** | Not needed / Auto / Custom | Based on swap involvement |
+| **Portfolio actions** | supported-protocols driven / custom UI | Contract-first |
 
 ### State Management Decision
 

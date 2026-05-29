@@ -190,7 +190,7 @@ components:
 | Morpho | Vault-specific stake/withdraw/claim and Morpho-only reward-token params |
 | Lido | Permit/withdraw/claimWithdrawal paths when relevant |
 | Quick Deposit | Featured card -> modal, protocol switcher, cross-chain data, mock-free data |
-| DeFi Portfolio actions | Supported-protocol matrix, action visibility, build-transaction params |
+| DeFi Portfolio actions | Supported-protocol matrix, action visibility, build-transaction params, and post-action refresh per [portfolio actions guide](portfolio-actions-guide.md) |
 
 ## Review Output Rules
 

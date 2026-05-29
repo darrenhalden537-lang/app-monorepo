@@ -16,6 +16,10 @@ Use this checklist to ensure complete integration of a new DeFi module or protoc
 - [ ] Identify supported tokens/assets
 - [ ] Define operation types (Stake/Unstake/Claim, Supply/Withdraw/Borrow/Repay, or custom)
 - [ ] Confirm backend API is ready
+- [ ] For portfolio one-click actions, verify the three contracts separately:
+  - [ ] `/wallet/v1/portfolio/positions` includes per-position metadata needed by the action
+  - [ ] `/earn/v1/defi/supported-protocols` category/action declarations match the position payload
+  - [ ] `/earn/v1/defi/build-transaction` response shape is normalized before UI/signature confirmation
 
 ### Architecture Decisions
 
@@ -590,7 +594,8 @@ For adding a new lending protocol (e.g., AAVE, Compound):
 - [ ] Morpho/Lido: vault-specific stake/withdraw/claim behavior
 - [ ] Quick Deposit / Featured assets: protocol switcher, cross-chain data, no
       mock fallback
-- [ ] DeFi Portfolio actions: supported-protocol matrix and build params
+- [ ] DeFi Portfolio actions: run the
+      [portfolio actions guide](portfolio-actions-guide.md) contract checks
 
 ---
 
