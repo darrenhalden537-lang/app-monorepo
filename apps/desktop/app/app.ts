@@ -77,6 +77,34 @@ import { startServices } from './service';
 import { setMainWindowForOAuthServer } from './service/oauthLocalServer/oauthLocalServer';
 import { destroyTrayManager, initTrayManager } from './tray/TrayManager';
 
+function makeIpcSafeError(error: unknown, fallbackMessage: string): Error {
+  if (error instanceof Error) {
+    const safeError = new Error(error.message || fallbackMessage);
+    safeError.name = error.name || 'Error';
+    safeError.stack = error.stack;
+    return safeError;
+  }
+
+  if (typeof error === 'string' && error) {
+    return new Error(error);
+  }
+
+  return new Error(fallbackMessage);
+}
+
+function makeIpcSafeResult(result: unknown): unknown {
+  try {
+    structuredClone(result);
+    return result;
+  } catch (error) {
+    try {
+      return JSON.parse(JSON.stringify(result)) as unknown;
+    } catch {
+      throw makeIpcSafeError(error, 'DESKTOP_API_CALL returned unsafe result');
+    }
+  }
+}
+
 initSentry();
 
 const isPerfCiMode = process.env.PERF_CI_MODE === '1';
@@ -926,13 +954,22 @@ async function createMainWindow() {
           `DESKTOP_API_CALL: disallowed method "${method}"`,
         );
       }
-      const result: unknown = await desktopApi.callDesktopApiMethod({
-        type: 'DESKTOP_API_IPC_MESSAGE',
-        module: module as any,
-        method,
-        params,
-      });
-      return result;
+      try {
+        const result: unknown = await desktopApi.callDesktopApiMethod({
+          type: 'DESKTOP_API_IPC_MESSAGE',
+          module: module as any,
+          method,
+          params,
+        });
+        return makeIpcSafeResult(result);
+      } catch (error) {
+        logger.error('[DESKTOP_API_CALL] handler failed', {
+          module,
+          method,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        throw makeIpcSafeError(error, 'DESKTOP_API_CALL failed');
+      }
     },
   );
 
