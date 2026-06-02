@@ -1,6 +1,7 @@
 import Expo
 import React
 import ReactAppDependencyProvider
+import SDWebImage
 // NOTE: Cannot directly import Nitro modules (ReactNativeDeviceUtils, ReactNativeBundleUpdate,
 // NativeLogger) because their umbrella headers contain C++ (.hpp) files that cause Clang
 // dependency scanner failures. Using NSClassFromString + KVC as a workaround.
@@ -148,6 +149,15 @@ public class AppDelegate: ExpoAppDelegate {
     // request (incl. recovery-mode path below). See SlowMist audit iOS-9.1.
     URLCache.shared.removeAllCachedResponses()
     URLCache.shared = URLCache(memoryCapacity: 4 * 1024 * 1024, diskCapacity: 0, diskPath: nil)
+
+    // Cap the shared image disk cache. expo-image loads through SDWebImage's
+    // SDImageCache.shared, whose default maxDiskSize is 0 (unbounded) — cached
+    // token logos, full-resolution NFT images and dApp favicons can grow to
+    // hundreds of MB of "Documents & Data". A 256 MB ceiling plus the existing
+    // 7-day age sweep keeps it bounded (SDWebImage evicts via LRU on background).
+    // Must run before the first image load.
+    SDImageCache.shared.config.maxDiskSize = 256 * 1024 * 1024
+    SDImageCache.shared.config.maxDiskAge = 7 * 24 * 60 * 60
 
     // === Recovery Check ===
     let defaults = UserDefaults.standard

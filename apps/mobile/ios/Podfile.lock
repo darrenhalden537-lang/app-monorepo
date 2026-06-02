@@ -4791,6 +4791,7 @@ DEPENDENCIES:
   - RNSVG (from `../../../node_modules/react-native-svg`)
   - RNWorklets (from `../../../node_modules/react-native-worklets`)
   - "ScrollGuard (from `../../../node_modules/@onekeyfe/react-native-scroll-guard`)"
+  - SDWebImage
   - "Skeleton (from `../../../node_modules/@onekeyfe/react-native-skeleton`)"
   - "SniConnect (from `../../../node_modules/@onekeyfe/react-native-sni-connect`)"
   - SocketRocket (~> 0.7.1)
@@ -5386,6 +5387,6 @@ SPEC CHECKSUMS:
   ZipArchive: d1cb3d9497356564bef6d96b128fe61af047b634
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: 2430ff9e6b7aa2cc39982650e3ad77e67fc8093d
+PODFILE CHECKSUM: 8ed9e1ca340d6ab30f2b48deaf105acaf5be38f7
 
 COCOAPODS: 1.16.2

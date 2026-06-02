@@ -113,6 +113,12 @@ target 'OneKeyWallet' do
   # Enable modular headers for EMASCurl to fix SniConnect dependency
   pod 'EMASCurl', :modular_headers => true
 
+  # SDWebImage is pulled transitively by expo-image; declare it with modular
+  # headers so AppDelegate.swift's `import SDWebImage` (used to cap
+  # SDImageCache.shared disk size) resolves via an explicit Clang module instead
+  # of relying on CocoaPods' auto-generated modulemap.
+  pod 'SDWebImage', :modular_headers => true
+
   # Use patched TOCropViewController with rotation crop-box shrink fix (OK-51551)
   pod 'TOCropViewController', :podspec => 'https://raw.githubusercontent.com/OneKeyHQ/app-modules/main/native-views/TOCropViewController/TOCropViewController.podspec'
 

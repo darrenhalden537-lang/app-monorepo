@@ -39,6 +39,14 @@ buildscript {
     }
 }
 
+// Take over Glide's single allowed AppGlideModule from expo-image so the app can
+// cap the image disk cache (see app/.../glide/OneKeyAppGlideModule.java). Glide
+// permits only one AppGlideModule per APK, so without excluding expo-image's the
+// annotation processor would fail. Read by expo-image's build.gradle via
+// `rootProject.ext` (safeExtGet); gradle.properties would NOT be picked up here.
+// expo-image's okhttp LibraryGlideModule is unaffected.
+ext.excludeAppGlideModule = true
+
 def reactNativeAndroidDir = new File(
   providers.exec {
     workingDir(rootDir)

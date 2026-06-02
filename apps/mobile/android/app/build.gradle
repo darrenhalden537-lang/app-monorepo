@@ -610,6 +610,14 @@ dependencies {
     implementation 'androidx.window:window:1.5.1'
     implementation 'androidx.window:window-java:1.5.1'
 
+    // Glide — used by OneKeyAppGlideModule to cap the image disk cache (expo-image
+    // loads through Glide). Version matches expo-image's GLIDE_VERSION (4.16.0).
+    // We own the only AppGlideModule (expo-image's is excluded via
+    // rootProject.ext.excludeAppGlideModule in the root build.gradle), so the
+    // annotation processor must run in this (Java) module.
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
+
     // geckoview
     // implementation("org.mozilla.geckoview:geckoview:133.0.20241209150345")
     // implementation("com.google.code.gson:gson:2.13.1")
