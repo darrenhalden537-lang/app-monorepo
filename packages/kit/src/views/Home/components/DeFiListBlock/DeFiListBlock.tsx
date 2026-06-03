@@ -978,7 +978,6 @@ function DeFiListBlock({
     };
 
     const onRefresh = () => {
-      isForceRefreshRef.current = true;
       if (isFocused) {
         pendingRefreshRef.current = false;
         refresh();
@@ -1184,6 +1183,7 @@ function DeFiListBlock({
 
   useEffect(() => {
     if (isHeaderRefreshing) {
+      isForceRefreshRef.current = true;
       if (network?.isAllNetworks) {
         handleRefreshAllNetworkData();
       } else {
